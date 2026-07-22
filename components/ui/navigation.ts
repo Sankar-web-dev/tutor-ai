@@ -58,12 +58,12 @@ export const adminNavigation: SidebarGroup[] = [
     url: "/gmail",
     items: [
       {
-        title: "Placement Emails",
-        url: "/gmail/placement",
+        title: "All Mails",
+        url: "/gmail",
       },
       {
-        title: "Internship Emails",
-        url: "/gmail/internship",
+        title: "Placement Emails",
+        url: "/gmail/placement",
       },
     ],
   },
@@ -138,19 +138,16 @@ export const adminBreadcrumb:BreadcrumbItems['items'] = {
     title:'JD Summary',
     url:'/summarization/jd'
   }],
+  '/gmail':[{
+    title:'Gmail',
+    url:'/gmail'
+  }],
   '/gmail/placement':[{
     title:'Gmail',
     url:'/gmail'
   },{
     title:'Placement Emails',
     url:'/gmail/placement'
-  }],
-  '/gmail/internship':[{
-    title:'Gmail',
-    url:'/gmail'
-  },{
-    title:'Internship Emails',
-    url:'/gmail/internship'
   }],
   '/notes':[{
     title:'Smart Notes',
