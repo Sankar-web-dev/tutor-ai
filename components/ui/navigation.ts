@@ -44,11 +44,11 @@ export const adminNavigation: SidebarGroup[] = [
     url: "/summarization",
     items: [
       {
-        title: "PDF Summary",
+        title: "Resume Analyser",
         url: "/summarization/pdf",
       },
       {
-        title: "JD Summary",
+        title: "JD Analyzer",
         url: "/summarization/jd",
       },
     ],
@@ -159,6 +159,13 @@ export const adminBreadcrumb:BreadcrumbItems['items'] = {
   },{
     title:'Create Note',
     url:'/notes/create'
+  }],
+  '/notes/edit/[id]':[{
+    title:'Smart Notes',
+    url:'/notes'
+  },{
+    title:'Edit Note',
+    url:'/notes/edit/[id]'
   }],
   '/doubt-solver':[{
     title:'AI Doubt Solver',
