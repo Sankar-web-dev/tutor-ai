@@ -4,7 +4,7 @@ export default function PlacementEmailsPage() {
   return (
     <div className="container mx-auto p-6">
       <EmailList 
-        query="placement OR job OR interview OR offer OR recruitment" 
+        placement 
         title="Placement Emails" 
       />
     </div>

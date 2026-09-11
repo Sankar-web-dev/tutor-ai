@@ -1,9 +1,10 @@
 'use client'
 
 import { gmailService, GmailEmail } from '@/services/gmail.service'
+import { calendarService } from '@/services/calendar.service'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2, Mail, Calendar, User, RefreshCw, ArrowLeft } from 'lucide-react'
+import { Loader2, Mail, Calendar, User, RefreshCw, ArrowLeft, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
@@ -11,14 +12,52 @@ import { useState } from 'react'
 interface EmailListProps {
   query?: string
   title: string
+  placement?: boolean
 }
 
-export function EmailList({ query, title }: EmailListProps) {
+export function EmailList({ query, title, placement }: EmailListProps) {
   const [selectedEmail, setSelectedEmail] = useState<GmailEmail | null>(null)
+  const [creating, setCreating] = useState<string | null>(null)
+
+  const handleCreateReminder = async (email: GmailEmail) => {
+    const eventDate = gmailService.extractEventDate(email)
+    if (!eventDate) {
+      alert('No event date found in this email.')
+      return
+    }
+
+    const start = new Date(eventDate.date)
+    if (!eventDate.hasTime) {
+      start.setHours(9, 0, 0, 0)
+    }
+
+    const end = new Date(start)
+    end.setHours(end.getHours() + 1)
+
+    setCreating(email.id)
+    try {
+      await calendarService.createEvent({
+        summary: email.subject,
+        description: `${email.from}\n\n${email.body || email.snippet}`,
+        start: start.toISOString(),
+        end: end.toISOString(),
+      })
+      alert(`Reminder created for ${start.toLocaleString()}`)
+    } catch (error) {
+      console.error('Error creating reminder:', error)
+      alert('Failed to create calendar reminder.')
+    } finally {
+      setCreating(null)
+    }
+  }
 
   const { data: emails, isLoading, error, refetch, isRefetching } = useQuery({
-    queryKey: ['emails', query],
-    queryFn: () => query ? gmailService.fetchEmailsByQuery(query) : gmailService.fetchEmails(),
+    queryKey: ['emails', query, placement],
+    queryFn: () => {
+      if (placement) return gmailService.fetchPlacementEmails()
+      if (query) return gmailService.fetchEmailsByQuery(query)
+      return gmailService.fetchEmails()
+    },
   })
 
   if (isLoading) {
@@ -60,16 +99,35 @@ export function EmailList({ query, title }: EmailListProps) {
   }
 
   if (selectedEmail) {
+    const eventDate = gmailService.extractEventDate(selectedEmail)
+
     return (
       <div className="space-y-4">
-        <Button 
-          variant="ghost" 
-          onClick={() => setSelectedEmail(null)}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to list
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            onClick={() => setSelectedEmail(null)}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to list
+          </Button>
+          {eventDate && (
+            <Button
+              onClick={() => handleCreateReminder(selectedEmail)}
+              disabled={creating === selectedEmail.id}
+              size="sm"
+              className="gap-2"
+            >
+              {creating === selectedEmail.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Bell className="h-4 w-4" />
+              )}
+              Set Reminder
+            </Button>
+          )}
+        </div>
         <Card className="border-2">
           <CardHeader className="space-y-4">
             <div>
@@ -135,9 +193,29 @@ export function EmailList({ query, title }: EmailListProps) {
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="font-semibold text-base truncate flex-1">{email.subject}</h3>
-                    <Badge variant="outline" className="text-xs">
-                      {index + 1}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      {gmailService.extractEventDate(email) && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleCreateReminder(email)
+                          }}
+                          disabled={creating === email.id}
+                        >
+                          {creating === email.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Bell className="h-4 w-4 text-primary" />
+                          )}
+                        </Button>
+                      )}
+                      <Badge variant="outline" className="text-xs">
+                        {index + 1}
+                      </Badge>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <User className="h-3 w-3" />

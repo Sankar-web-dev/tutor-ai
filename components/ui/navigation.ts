@@ -45,11 +45,15 @@ export const adminNavigation: SidebarGroup[] = [
     items: [
       {
         title: "Resume Analyser",
-        url: "/summarization/pdf",
+        url: "/summarization",
       },
       {
         title: "JD Analyzer",
         url: "/summarization/jd",
+      },
+      {
+        title: "QA from Drive",
+        url: "/summarization/qa",
       },
     ],
   },
@@ -137,6 +141,13 @@ export const adminBreadcrumb:BreadcrumbItems['items'] = {
   },{
     title:'JD Summary',
     url:'/summarization/jd'
+  }],
+  '/summarization/qa':[{
+    title:'Summarization',
+    url:'/summarization'
+  },{
+    title:'QA from Drive',
+    url:'/summarization/qa'
   }],
   '/gmail':[{
     title:'Gmail',
