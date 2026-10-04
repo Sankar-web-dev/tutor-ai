@@ -5,7 +5,8 @@ import { JDInput } from '@/components/jd/jd-input'
 import { JDDetailsDisplay } from '@/components/jd/jd-details-display'
 import { jdExtractionService, JDDetails } from '@/services/jd-extraction.service'
 import { useMutation } from '@tanstack/react-query'
-import { Loader2, Briefcase } from 'lucide-react'
+import { Loader2, Briefcase, Sparkles, RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 export default function JDAnalyzerPage() {
@@ -35,16 +36,40 @@ export default function JDAnalyzerPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">JD Analyzer</h1>
-        <p className="text-muted-foreground mt-2">
-          Extract key details from job descriptions including company, role, salary, and more
-        </p>
+    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="size-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
+              <Briefcase className="size-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Job Description Intelligence
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Instant AI breakdown of CTC salary, service bonds, required tech stack, and interview criteria
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {details && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            className="gap-2 rounded-xl h-9"
+          >
+            <RotateCcw className="size-3.5" />
+            Analyze Another JD
+          </Button>
+        )}
       </div>
 
       {!details ? (
-        <div className="max-w-3xl">
+        <div className="max-w-3xl mx-auto">
           <JDInput 
             onJDSubmit={handleJDSubmit}
             isLoading={extractMutation.isPending}
@@ -52,23 +77,13 @@ export default function JDAnalyzerPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Briefcase className="h-4 w-4" />
-              <span>Job Description Analyzed</span>
-            </div>
-            <button
-              onClick={handleReset}
-              className="text-sm text-primary hover:underline"
-            >
-              Analyze Another JD
-            </button>
-          </div>
-
           {extractMutation.isPending ? (
-            <div className="flex flex-col items-center justify-center h-64 gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-muted-foreground">Extracting JD details...</p>
+            <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3">
+              <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+              <p className="text-sm font-semibold text-foreground">Extracting Job Criteria & Packages...</p>
+              <p className="text-xs text-muted-foreground">Structuring role parameters with OpenRouter LLM</p>
             </div>
           ) : (
             <JDDetailsDisplay details={details} />

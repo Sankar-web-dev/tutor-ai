@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { authService } from '@/services/auth.service'
 import { useMutation } from '@tanstack/react-query'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 
 export function LandingNavbar() {
   const signInMutation = useMutation({
@@ -14,24 +14,27 @@ export function LandingNavbar() {
   })
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">AI</span>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/60">
+      <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="size-9 bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-500/25">
+            <Sparkles className="size-4.5" />
           </div>
-          <span className="font-semibold text-lg">Career Assistant</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-base tracking-tight text-foreground">AI Career Suite</span>
+            <span className="text-[10px] text-muted-foreground font-mono">CAMPUS PLACEMENT OS</span>
+          </div>
         </div>
         
         <Button 
           onClick={() => signInMutation.mutate()}
           disabled={signInMutation.isPending}
-          className="gap-2"
+          className="gap-2 rounded-xl h-10 px-5 font-semibold text-xs sm:text-sm shadow-md shadow-primary/20"
         >
           {signInMutation.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
