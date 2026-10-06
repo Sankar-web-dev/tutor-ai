@@ -134,7 +134,12 @@ export function SidebarComponent({
                 <SidebarGroupContent>
                   <SidebarMenu className="gap-0.5">
                     {item.items.map((subItem) => {
-                      const isActive = pathname === subItem.url || (subItem.url !== '/' && pathname?.startsWith(subItem.url));
+                      // Check if any nav item in the sidebar has an exact match for the current path
+                      const isExactMatch = pathname === subItem.url;
+                      const isParentMatch = subItem.url !== '/' && pathname?.startsWith(subItem.url + '/');
+                      const hasExactMatchInNav = filteredNavigationItems.some(g => g.items.some(i => i.url === pathname));
+                      
+                      const isActive = hasExactMatchInNav ? isExactMatch : (isExactMatch || isParentMatch);
                       return (
                         <SidebarMenuItem key={subItem.title}>
                           <SidebarMenuButton

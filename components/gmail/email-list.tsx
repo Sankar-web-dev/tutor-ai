@@ -196,7 +196,9 @@ export function EmailList({ query, title, placement }: EmailListProps) {
               {eventDate && (
                 <Badge variant="warning" className="gap-1 px-2.5 py-0.5">
                   <Clock className="size-3" />
-                  Detected Event Date: {eventDate.date}
+                  Detected Event Date: {eventDate.hasTime
+                    ? eventDate.date.toLocaleString()
+                    : eventDate.date.toLocaleDateString()}
                 </Badge>
               )}
             </div>
